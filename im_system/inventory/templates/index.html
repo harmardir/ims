@@ -7,7 +7,7 @@
         {% if user.is_authenticated %}
       <h1>Hi {{ user.username }} ! Welcome to the Inventory Management System homepage</h1>
       <p class="lead">To view all the assets , select the type from the menu above.</p>
-      <a class="btn btn-lg btn-primary" href="#" role="button">View navbar docs &raquo;</a>
+      <p><a href="{% url 'logout' %}">Log Out</a></p>
       {% else %}
     <p>You are not logged in</p>
     {% endif %}
