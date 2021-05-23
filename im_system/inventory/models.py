@@ -1,4 +1,5 @@
 from django.db import models
+from django.core.exceptions import ValidationError, NON_FIELD_ERRORS
 
 class Order(models.Model):
     order_name=models.CharField(max_length=20)      
@@ -30,6 +31,15 @@ class Laptop(models.Model):
        , ('HP', 'HP'), ('Asus', 'Asus'), ('Other', 'Other'))
     processor_choices = ( ('Core i3', 'Core i3'), ('Core i5', 'Core i5'),('Core i7', 'Core i7'),('Other','Other'))
     status_choices = ( ('Stock', 'Stock'),('in_use','in_use'),('Maintenance','Maintenance'),('Depreciated','Depreciated'))
+
+    def clean(self):
+        # Don't allow stock entries to have a employee name.
+        if self.status == 'Stock' and self.employee_name is not None:
+            raise ValidationError({'employee_name':('Laptops in stock may not have an employee name.')})
+        # Don't allow in_use entries to have blank emplyee name
+        elif self.status == 'in_use' and self.employee_name is None:
+            raise ValidationError({'employee_name':('Laptops in_use should have an employee name.')})
+            
 
     order_name = models.ForeignKey(Order,on_delete=models.CASCADE)
     manufacturer = models.CharField(max_length=100,choices = laptop_manufacturer_choices)
